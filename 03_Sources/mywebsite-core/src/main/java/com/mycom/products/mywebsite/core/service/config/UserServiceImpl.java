@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mycom.products.mywebsite.core.annotation.TXManageable;
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.bean.config.UserBean;
 import com.mycom.products.mywebsite.core.bean.config.UserRoleBean;
@@ -48,43 +49,42 @@ import com.mycom.products.mywebsite.core.service.config.api.UserService;
 
 @Service
 public class UserServiceImpl extends JoinedServiceImpl<UserBean> implements UserService {
-    private static final Logger serviceLogger = Logger.getLogger("serviceLogs." + UserServiceImpl.class.getName());
-    private UserDao userDao;
+	private static final Logger serviceLogger = Logger.getLogger("serviceLogs." + UserServiceImpl.class.getName());
+	private UserDao userDao;
 
-    @Autowired
-    private UserRoleDao userRoleDao;
+	@Autowired
+	private UserRoleDao userRoleDao;
 
-    @Autowired
-    public UserServiceImpl(UserDao userDao) {
-	super(userDao, userDao);
-	this.userDao = userDao;
-    }
-
-    @Override
-    public long insertUserWithRoles(UserBean user, long recordRegId) throws DuplicatedEntryException, BusinessException {
-	serviceLogger.info(BaseBean.LOG_PREFIX + "This transaction was initiated by User ID # " + recordRegId + BaseBean.LOG_SUFFIX);
-	serviceLogger.info(
-		BaseBean.LOG_PREFIX + "Transaction start for inserting" + getObjectName(user) + "informations." + BaseBean.LOG_SUFFIX);
-	long lastInsertedId = 0;
-	try {
-	    lastInsertedId = userDao.insert(user, recordRegId);
-	    if (user.getRoleIds() != null && user.getRoleIds().size() > 0) {
-		serviceLogger.info(
-			BaseBean.LOG_PREFIX + "Transaction start for inserting related 'User-Role' informations." + BaseBean.LOG_SUFFIX);
-		List<UserRoleBean> userRoles = new ArrayList<>();
-		user.getRoleIds().forEach(roleId -> {
-		    UserRoleBean userRole = new UserRoleBean(user.getId(), roleId);
-		    userRoles.add(userRole);
-		});
-		userRoleDao.insert(userRoles, recordRegId);
-	    }
-	} catch (DAOException e) {
-	    throw new BusinessException(e.getMessage(), e);
+	@Autowired
+	public UserServiceImpl(UserDao userDao) {
+		super(userDao, userDao);
+		this.userDao = userDao;
 	}
 
-	serviceLogger.info(BaseBean.LOG_PREFIX + "Transaction finished successfully for inserting" + getObjectName(user) + "informations."
-		+ BaseBean.LOG_SUFFIX);
-	return lastInsertedId;
-    }
+	@Override
+	@TXManageable
+	public long insertUserWithRoles(UserBean user,
+			long recordRegId) throws DuplicatedEntryException, BusinessException {
+		serviceLogger.info(BaseBean.LOG_PREFIX + "This transaction was initiated by User ID # " + recordRegId + BaseBean.LOG_SUFFIX);
+		serviceLogger.info(BaseBean.LOG_PREFIX + "Transaction start for inserting" + getObjectName(user) + "informations." + BaseBean.LOG_SUFFIX);
+		long lastInsertedId = 0;
+		try {
+			lastInsertedId = userDao.insert(user, recordRegId);
+			if (user.getRoleIds() != null && user.getRoleIds().size() > 0) {
+				serviceLogger.info(BaseBean.LOG_PREFIX + "Transaction start for inserting related 'User-Role' informations." + BaseBean.LOG_SUFFIX);
+				List<UserRoleBean> userRoles = new ArrayList<>();
+				user.getRoleIds().forEach(roleId -> {
+					UserRoleBean userRole = new UserRoleBean(user.getId(), roleId);
+					userRoles.add(userRole);
+				});
+				userRoleDao.insert(userRoles, recordRegId);
+			}
+		} catch (DAOException e) {
+			throw new BusinessException(e.getMessage(), e);
+		}
+
+		serviceLogger.info(BaseBean.LOG_PREFIX + "Transaction finished successfully for inserting" + getObjectName(user) + "informations." + BaseBean.LOG_SUFFIX);
+		return lastInsertedId;
+	}
 
 }

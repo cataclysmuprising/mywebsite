@@ -26,18 +26,7 @@
 		    <groupId>net.sourceforge.barbecue</groupId>
 		    <artifactId>barbecue</artifactId>
 		    <version>1.5-beta1</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.sun.mail</groupId>
-		    <artifactId>javax.mail</artifactId>
-		    <version>1.5.6</version>
-		</dependency>
-		<!-- velocity -->
-		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<version>1.7</version>
-		</dependency>		
+		</dependency>	
 		<!-- 
 		Microsoft's open sourced jdbc driver at https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc 
 		http://stackoverflow.com/questions/19537396/missing-artifact-com-microsoft-sqlserversqljdbc4jar4-0
