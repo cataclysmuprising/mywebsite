@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.config.RoleActionMapper">
+
+	<resultMap 	type="RoleActionBean" 		id="Parent_RoleActionResult">
+		<result property="roleId" 			column="role_id" />
+		<result property="actionId" 		column="action_id" />
+	</resultMap>
+	
+	<resultMap 	 	 type="RoleActionBean" 		id="RoleActionResult" extends="Parent_RoleActionResult">
+		<result 	 property="recordRegId" 	column="record_reg_id"/>
+		<result 	 property="recordUpdId" 	column="record_upd_id"/>
+		<result 	 property="recordRegDate" 	column="record_reg_date"/>
+		<result 	 property="recordUpdDate" 	column="record_upd_date"/>	
+		<association property="role" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+		<association property="action" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.Parent_ActionResult" />
+	</resultMap>
+
+	<sql id="tables">
+		FROM mjr_role_action roleAction
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			<choose>
+				<when test="criteria != null and criteria.keySet().size() > 0">
+					<choose>
+						<when test="criteria.asPerRole != null and criteria.asPerRole">
+							RIGHT JOIN mjr_role role ON roleAction.role_id = role.id
+						</when>
+						<otherwise>
+							INNER JOIN mjr_role role ON roleAction.role_id = role.id
+						</otherwise>
+					</choose>
+					<choose>
+						<when test="criteria.asPerAction != null and criteria.asPerAction">
+							RIGHT JOIN mjr_action action ON roleAction.action_id = action.id
+						</when>
+						<otherwise>
+							INNER JOIN mjr_action action ON roleAction.action_id = action.id
+						</otherwise>
+					</choose>					
+				</when>
+				<otherwise>
+					INNER JOIN mjr_role role ON roleAction.role_id = role.id
+					INNER JOIN mjr_action action ON roleAction.action_id = action.id			
+				</otherwise>
+			</choose>
+		</if>		
+	</sql>
+	
+	<sql id="main_columns">
+		roleAction.role_id,
+		roleAction.action_id
+	</sql>
+	
+	<sql id="meta_columns">
+		,roleAction.record_reg_id
+		,roleAction.record_upd_id
+		,roleAction.record_reg_date
+		,roleAction.record_upd_date
+	</sql>
+	
+	<sql id="major_table_columns">
+		role_id,	
+		action_id		
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{roleId},	
+		#{actionId}	
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.roleId},	
+		#{record.actionId}
+	</sql>		
+	
+	<sql id="columns">
+		<include refid="main_columns" />
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.main_columns" />
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.main_columns" />
+		</if>
+		<include refid="meta_columns" />		
+	</sql>
+
+	<sql id="criterias">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.roleId != null">
+					AND roleAction.role_id = #{criteria.roleId}
+				</if>
+				<if test="criteria.actionId != null">
+					AND roleAction.action_id = #{criteria.actionId}
+				</if>
+				<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+					<if test="criteria.module != null">
+						action.module = #{criteria.module}
+					</if>				
+				</if>
+			</where>
+		</if>
+	</sql>
+		
+	<sql id="orders">
+		order by
+		<choose>
+			<when test="criteria !=null and criteria.orderBy == 'roleId'">
+				roleAction.role_id ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'actionId'">
+				roleAction.action_id ${criteria.orderAs}
+			</when>
+			<otherwise>
+				roleAction.role_id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="RoleActionBean">
+		INSERT INTO mjr_role_action (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="insertWithRelatedKeys">
+		INSERT INTO mjr_role_action (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			#{key1},	
+			#{key2},
+			#{recordRegId},
+			#{recordRegId},<!-- both are same -->
+			getDate(),
+			getDate()				
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_role_action (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>	
+	
+	<delete id="deleteByKeys">
+		DELETE FROM mjr_role_action
+		WHERE role_id = #{key1}
+		AND   action_id = #{key2}
+	</delete>
+	
+	<delete id="deleteByCriteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			DELETE FROM mjr_role_action
+			<where>
+				<if test="criteria.roleId != null">
+					AND role_id = #{criteria.roleId}
+				</if>
+				<if test="criteria.roleIds != null">
+					AND role_id IN 
+				    <foreach item="id" index="index" collection="criteria.roleIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>					
+				</if>				
+				<if test="criteria.actionId != null">
+					AND action_id = #{criteria.actionId}
+				</if>
+				<if test="criteria.actionIds != null">
+					AND action_id IN 
+				    <foreach item="id" index="index" collection="criteria.actionIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>					
+				</if>				
+			</where>
+		</if>
+	</delete>		
+	
+	<select id="selectMultiRecords"  resultMap="RoleActionResult">
+		SELECT
+		<include refid="columns"  />
+		<include refid="tables" />
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
+		</if>
+	</select>
+	
+	<select id="selectRelatedKeys" resultType="long">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			SELECT
+			<choose>
+				<when test="criteria.roleId != null">
+					roleAction.action_id
+				</when>
+				<otherwise>
+					roleAction.role_id
+				</otherwise>
+			</choose>
+			FROM mjr_role_action roleAction
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				<where>
+					<choose>
+						<when test="criteria.roleId != null">
+							roleAction.role_id = #{criteria.roleId}
+						</when>
+						<otherwise>
+							roleAction.action_id = #{criteria.actionId}
+						</otherwise>
+					</choose>				
+				</where>
+			</if>		
+		</if>
+	</select>	
+	
+	<select id="selectByKeys" resultMap="RoleActionResult">
+		<if test="key1 != null and key2 !=null">
+			SELECT
+			<include refid="columns"  />
+			<include refid="tables" />
+			WHERE 
+				roleAction.role_id = #{key1}
+				AND roleAction.action_id = #{key2}
+		</if>
+	</select>	
+
+	<select id="selectCounts" resultType="long">
+		SELECT count(*)
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+</mapper>

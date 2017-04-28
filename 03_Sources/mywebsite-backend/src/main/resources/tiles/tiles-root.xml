@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="baseLayout" template="/WEB-INF/views/base/template/baseLayout.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/base/template/header.jsp" />
+		<put-attribute name="leftMenu" value="/WEB-INF/views/base/template/main-sidebar.jsp" />
+		<put-attribute name="content" value="" />
+		<put-attribute name="rightMenu" value="/WEB-INF/views/base/template/control-sidebar.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/views/base/template/footer.jsp" />
+		<put-list-attribute name="layoutScripts">
+			<add-attribute value="js/common/pace" />
+			<add-attribute value="js/common/jquery-1.12.3" />
+			<add-attribute value="js/common/jquery-ui" />
+			<add-attribute value="js/common/bootstrap" />
+			<add-attribute value="js/common/moment" />
+			<add-attribute value="js/common/fastclick" />
+			<add-attribute value="js/common/icheck" />
+			<add-attribute value="js/common/md5" />
+			<add-attribute value="js/common/lobibox-notifications" />
+			<add-attribute value="js/common/tooltipster.bundle" />
+			<add-attribute value="js/common/jquery.slimscroll" />
+			<add-attribute value="js/common/bootstrap-select" />
+			<add-attribute value="js/common/bootstrap-datetimepicker" />
+			<add-attribute value="js/common/theme" />
+			<add-attribute value="js/common/base" />
+		</put-list-attribute>
+		<put-list-attribute name="layoutStyles">
+			<add-attribute value="css/common/pace" />
+			<add-attribute value="css/common/bootstrap" />
+			<add-attribute value="css/common/font-awesome" />
+			<add-attribute value="css/common/animate" />
+			<add-attribute value="css/common/icheck-minimal-blue" />
+			<add-attribute value="css/common/bootstrap-select" />
+			<add-attribute value="css/common/bootstrap-datetimepicker" />
+			<add-attribute value="css/common/lobibox" />
+			<add-attribute value="css/common/tooltipster.bundle" />
+			<add-attribute value="css/common/skin-blue" />
+			<add-attribute value="css/common/theme" />
+			<add-attribute value="css/common/base" />
+		</put-list-attribute>
+	</definition>
+	
+	<definition name="dashboard" extends="baseLayout">
+		<put-attribute name="content" value="/WEB-INF/views/site/application/dashboard.jsp" />
+		<put-list-attribute name="pageScripts">
+			<add-attribute value="js/site/application/dashboard" />
+		</put-list-attribute>
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="css/site/application/dashboard" />
+		</put-list-attribute>
+	</definition>	
+	
+	<definition name="login" template="/WEB-INF/views/base/login.jsp">
+		<put-list-attribute name="pageScripts">
+			<add-attribute value="js/common/jquery-1.12.3" />
+			<add-attribute value="js/common/bootstrap" />
+			<add-attribute value="js/common/icheck" />
+		</put-list-attribute>
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="css/common/bootstrap" />
+			<add-attribute value="css/common/font-awesome" />
+			<add-attribute value="css/common/icheck-minimal-blue" />
+			<add-attribute value="css/common/theme" />
+			<add-attribute value="css/site/login" />
+		</put-list-attribute>
+	</definition>
+	<definition name="error/*" template="/WEB-INF/views/base/error/errorLayout.jsp">
+		<put-attribute name="content" value="/WEB-INF/views/base/error/{1}.jsp" />
+	</definition>
+</tiles-definitions>

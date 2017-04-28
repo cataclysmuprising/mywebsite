@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="MyWebsite_Test_Suit_Configuration_Services">
+	<test name="Configuration_Test_Cases">
+		<groups>
+			<define name="all_test">
+				<include name="fetch" />
+				<include name="insert" />
+				<include name="update" />
+				<include name="update" />
+			</define>
+			
+			<define name="fetch_test">
+				<include name="fetch" />
+			</define>
+			
+			<define name="insert_test">
+				<include name="insert" />
+			</define>
+			
+			<define name="update_test">
+				<include name="update" />
+			</define>
+			
+			<define name="delete_test">
+				<include name="delete" />
+			</define>
+															
+			<run>
+				<include name="all_test" />
+			</run>
+		</groups>
+		<classes>
+			<class name="com.mycom.products.mywebsite.core.unitTest.config.UserUnitTest" />
+			<class name="com.mycom.products.mywebsite.core.unitTest.config.LoginHistoryUnitTest" />
+			<class name="com.mycom.products.mywebsite.core.unitTest.config.RoleUnitTest" />
+			<class name="com.mycom.products.mywebsite.core.unitTest.config.ActionUnitTest" />
+			<class name="com.mycom.products.mywebsite.core.unitTest.config.RoleActionUnitTest" />
+			<class name="com.mycom.products.mywebsite.core.unitTest.config.UserRoleUnitTest" />
+		</classes>
+	</test>
+</suite>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="MyWebsite_Test_Suit_Application_Services">
+	<test name="Application_Test_Cases">
+		<groups>
+			<define name="all_test">
+				<include name="fetch" />
+				<include name="insert" />
+				<include name="update" />
+				<include name="update" />
+			</define>
+			
+			<define name="fetch_test">
+				<include name="fetch" />
+			</define>
+			
+			<define name="insert_test">
+				<include name="insert" />
+			</define>
+			
+			<define name="update_test">
+				<include name="update" />
+			</define>
+			
+			<define name="delete_test">
+				<include name="delete" />
+			</define>
+															
+			<run>
+				<include name="all_test" />
+			</run>
+		</groups>
+<!-- 		<classes>
+			<class name="yourTestClassName" />
+		</classes> -->
+	</test>
+</suite>

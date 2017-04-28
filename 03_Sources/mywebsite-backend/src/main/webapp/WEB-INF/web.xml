@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
+	<!-- app settings -->
+	<display-name>My Website</display-name>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	<!-- DispatcherServlet -->
+	<servlet>
+		<servlet-name>springDispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>
+				classpath:spring/spring-servlet-context.xml
+		    </param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springDispatcherServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<!-- ContextLoader -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+		    	classpath:spring-core/spring-application-context.xml
+		    	classpath:spring/spring-application-context.xml
+		</param-value>
+	</context-param>
+	<!-- load from security context -->
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>mywebsite</param-value>
+	</context-param>	
+	<!-- Security filter -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- Page Not Found Mapping -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/base/error/resourceNotFound.jsp</location>
+	</error-page>
+	<!-- For Session Management -->
+	<listener>
+		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+	</listener>	
+	<session-config>
+		<session-timeout>30</session-timeout>
+		<tracking-mode>COOKIE</tracking-mode>
+	</session-config>
+	<!-- For Internationalization and Validation message support for Tomcat -->
+	<mime-mapping>
+		<extension>properties</extension>
+		<mime-type>text/plain</mime-type>
+	</mime-mapping> 	
+</web-app>

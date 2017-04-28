@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.BaseMapper">
+	<sql id="meta_table_columns">
+		,record_reg_id
+		,record_upd_id
+		,record_reg_date
+		,record_upd_date
+	</sql>
+	
+	<sql id="meta_table_fields">
+		,#{recordRegId}
+		,#{recordUpdId}
+		,#{recordRegDate}
+		,#{recordUpdDate}	
+	</sql>
+	
+	<sql id="meta_table_iterate_fields">
+		,#{record.recordRegId}
+		,#{record.recordUpdId}
+		,#{record.recordRegDate}
+		,#{record.recordUpdDate}	
+	</sql>
+	
+	<sql id="history_table_columns">
+		,id	
+		,transaction_date
+		,transaction_type
+	</sql>
+	
+	<sql id="history_table_fields">
+		,#{id}
+		,getDate()
+		,#{transactionType,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}
+	</sql>
+	
+	<sql id="history_table_iterate_fields">
+		,#{record.id}
+		,getDate()
+		,#{record.transactionType,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}
+	</sql>
+	
+	<select id="disableAllConstraints">
+		EXEC sp_MSforeachtable "ALTER TABLE ? NOCHECK CONSTRAINT all"
+	</select>
+	
+	<select id="enableAllConstraints">
+		EXEC sp_MSforeachtable "ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all"
+	</select>	
+					
+</mapper>

@@ -1,0 +1,214 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.mycom.products</groupId>
+	<artifactId>mywebsite</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+	
+	<!-- Optional settings for Maven build -->
+	<name>Spring MVC Template Project</name>
+	<description>descriptions</description>
+	<url>undefined</url>
+	
+	<!-- All participants for this project -->
+	<developers>
+		<developer>
+			<id>cataclysm</id>
+			<name>Than Htike Aung</name>
+			<email>rage.cataclysm@gmail.com</email>
+		</developer>
+	</developers>
+	
+	<!-- Basic need just 2 modules -->
+	<modules>
+		<module>mywebsite-front</module>
+		<module>mywebsite-core</module>
+		<module>mywebsite-backend</module>
+	</modules>
+	
+	<!-- project settings and base versions of dependencies -->
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<testng.version>6.9.8</testng.version>
+		<logger.version>1.7.21</logger.version>
+        <spring.version>4.3.5.RELEASE</spring.version>
+        <spring.security.version>4.2.2.RELEASE</spring.security.version>
+	</properties>
+
+	<!-- repositories outside of the Maven Central -->
+	<repositories>
+		<!-- Repository for ReportNG -->
+		<!-- https://solidsoft.wordpress.com/2011/01/23/better-looking-html-test-reports-for-testng-with-reportng-maven-guide/ -->	
+	    <repository>
+	        <id>java-net</id>
+	        <url>http://download.java.net/maven/2</url>
+	    </repository>
+	</repositories>	
+	
+	<dependencyManagement>
+	    <dependencies>
+	        <dependency>
+	            <groupId>org.springframework</groupId>
+	            <artifactId>spring-framework-bom</artifactId>
+	            <version>${spring.version}</version>
+	            <type>pom</type>
+	            <scope>import</scope>
+	        </dependency>
+	    </dependencies>
+	</dependencyManagement>	
+	
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>	
+		<!-- Testing Libraies -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testng.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://solidsoft.wordpress.com/2011/01/23/better-looking-html-test-reports-for-testng-with-reportng-maven-guide/ -->
+	    <dependency>
+	        <groupId>org.uncommons</groupId>
+	        <artifactId>reportng</artifactId>
+	        <version>1.1.4</version>
+	        <scope>test</scope>
+	        <exclusions>
+	            <exclusion>
+	                <groupId>org.testng</groupId>
+	                <artifactId>testng</artifactId>
+	            </exclusion>
+	        </exclusions>
+	    </dependency>	
+		<dependency>
+		    <groupId>com.google.inject</groupId>
+		    <artifactId>guice</artifactId>
+		    <version>3.0</version>
+		    <scope>test</scope>
+		</dependency>	    	
+		<!-- Logging -->
+		<!-- slf4j bridge for log4j -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-log4j12</artifactId>
+		    <version>${logger.version}</version>
+		</dependency>
+		<!-- jcl logging for slf4j -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jcl-over-slf4j</artifactId>
+		    <version>${logger.version}</version>
+		</dependency>
+		<!-- logging color for console output -->
+		<dependency>
+			<groupId>com.jcabi</groupId>
+			<artifactId>jcabi-log</artifactId>
+			<version>0.17.2</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>validation-api</artifactId>
+					<groupId>javax.validation</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<!-- Jackson -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			 <version>2.8.6</version>
+		</dependency>	
+        <!-- json request -->       
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.11</version>
+        </dependency>
+        <!-- Utility classes from apache -->   
+		<dependency>
+		    <groupId>commons-lang</groupId>
+		    <artifactId>commons-lang</artifactId>
+		    <version>2.6</version>
+		</dependency>
+	</dependencies>	
+	
+	<build>
+		<plugins>
+			<!--  
+			   http://stackoverflow.com/questions/567996/can-maven-collect-all-the-dependent-jars-for-a-project-to-help-with-application 
+			   This option places copies of all of the jar files in the target directory.
+			-->		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<quiet>true</quiet>
+					<outputDirectory>
+						${project.build.directory}/dependencies
+					</outputDirectory>
+				</configuration>
+			</plugin>
+			<!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/testng.html -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				 <version>2.19.1</version>
+				<configuration>
+					<reportsDirectory>..\..\04_Tests</reportsDirectory>				
+					<groups>fetch_test,insert_test,update_test,delete_test</groups>
+					<properties>
+			            <property>
+			              <name>usedefaultlisteners</name>
+			              <value>false</value> <!-- disabling default listeners is optional -->
+			            </property>	
+	                    <property>
+	                        <name>listener</name>
+	                        <value>org.uncommons.reportng.HTMLReporter, org.uncommons.reportng.JUnitXMLReporter</value>
+	                    </property>
+			            <property>
+			              <name>surefire.testng.verbose</name>
+			              <value>2</value>
+			            </property>					
+						<property>
+							<name>parallel</name>
+							<value>methods</value>
+						</property>
+						<property>
+							<name>dataproviderthreadcount</name>
+							<value>30</value>
+						</property>
+					</properties>	
+					<workingDirectory>target/surefire-reports/html/</workingDirectory>			
+					<suiteXmlFiles>
+						<suiteXmlFile>${basedir}/src/test/resources/test_suits.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>			
+		</plugins>
+	</build>			
+</project>

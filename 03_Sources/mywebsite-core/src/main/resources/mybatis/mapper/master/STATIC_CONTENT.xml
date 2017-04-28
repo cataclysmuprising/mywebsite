@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper">
+
+	<resultMap  type="StaticContentBean" id="Parent_StaticContentResult">
+		<id 	property="id" 			 column="contentId" />
+ 		<result property="fileType" 	 column="file_type" />
+		<result property="fileName" 	 column="file_name" />
+		<result property="filePath" 	 column="file_path" />
+		<result property="fileSize" 	 column="file_size" />
+	</resultMap>
+	
+	<resultMap  type="StaticContentBean" id="StaticContentResult" extends="Parent_StaticContentResult">
+		<result property="recordRegId"   column="record_reg_id"/>
+		<result property="recordUpdId" 	 column="record_upd_id"/>
+		<result property="recordRegDate" column="record_reg_date"/>
+		<result property="recordUpdDate" column="record_upd_date"/>			
+	</resultMap>
+
+	<sql id="tables">
+		FROM mjr_static_content content
+	</sql>	
+	
+	<sql id="main_columns">
+		content.id AS contentId,
+		content.file_type,
+		content.file_name,
+		content.file_path,
+		content.file_size
+	</sql>
+	
+	<sql id="meta_columns">
+		,content.record_reg_id
+		,content.record_upd_id
+		,content.record_reg_date
+		,content.record_upd_date	
+	</sql>
+	
+	<sql id="major_table_columns">
+		file_type,
+		file_name,
+		file_path,
+		file_size
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{fileType},
+		#{fileName},
+		#{filePath},
+		#{fileSize}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.fileType},
+		#{record.fileName},
+		#{record.filePath},
+		#{record.fileSize}
+	</sql>		
+	
+	<sql id="columns">
+		<include refid="main_columns" />	
+		<include refid="meta_columns" />
+	</sql>	
+
+	<sql id="criterias">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					AND content.id = #{criteria.id}
+				</if>
+				<if test="criteria.includeIds != null">
+					AND content.id IN
+				    <foreach item="id" index="index" collection="criteria.includeIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>
+				<if test="criteria.excludeIds != null">
+					AND content.id NOT IN
+				    <foreach item="id" index="index" collection="criteria.excludeIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.fileType != null">
+					AND content.file_type = #{criteria.fileType}
+				</if>			
+				<if test="criteria.fileName != null">
+					AND content.file_name = #{criteria.fileName}
+				</if>
+				<if test="criteria.fileSize != null">
+					AND content.file_size = #{criteria.fileSize}
+				</if>							
+				<if test="criteria.word != null">
+					AND
+					(content.file_type 	 LIKE '%${criteria.word}%'
+					OR content.file_name LIKE '%${criteria.word}%'
+					OR content.file_size LIKE '%${criteria.word}%'
+					OR content.file_path LIKE '%${criteria.word}%'
+					)
+				</if>
+			</where>
+		</if>
+	</sql>
+	
+	<sql id="table_value_change_criteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					id = #{criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.fileType != null">
+					AND file_type = #{criteria.fileType}
+				</if>			
+				<if test="criteria.fileName != null">
+					AND file_name = #{criteria.fileName}
+				</if>
+				<if test="criteria.fileSize != null">
+					AND file_size = #{criteria.fileSize}
+				</if>
+			</where>
+		</if>	
+	</sql>	
+
+	<sql id="orders">
+		ORDER BY
+		<choose>
+			<when test="criteria !=null and criteria.orderBy == 'fileType'">
+				content.file_type ${criteria.orderAs}
+			</when>		
+			<when test="criteria !=null and criteria.orderBy == 'fileName'">
+				content.file_name ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'fileSize'">
+				content.file_size ${criteria.orderAs}
+			</when>			
+			<otherwise>
+				content.id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="SettingBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_static_content (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="insertSingleHistoryRecord" parameterType="SettingBean">
+		INSERT INTO hst_static_content (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_fields" />		
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_static_content (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>
+		
+	<insert id="insertMultiHistoryRecords" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO hst_static_content (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_iterate_fields" />	        
+	       </foreach>	
+       </if>			
+	</insert>
+	
+	<update id="update" parameterType="SettingBean">
+		UPDATE mjr_static_content
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			file_type = #{fileType},
+			file_name = #{fileName},
+			file_path = #{filePath},
+			file_size = #{fileSize}
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateWithCriteria">
+		UPDATE mjr_static_content
+		<set>
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				record_upd_id = #{criteria.recordUpdId},
+			</if>
+			record_upd_date = getDate(),
+			<if test="updateItems != null and updateItems.keySet().size() > 0">
+				<if test="updateItems.fileType != null">file_type = #{updateItems.fileType},</if>
+				<if test="updateItems.fileName != null">file_name = #{updateItems.fileName},</if>
+				<if test="updateItems.filePath != null">file_path = #{updateItems.filePath},</if>
+				<if test="updateItems.fileSize != null">file_size = #{updateItems.fileSize},</if>
+			</if>					
+		</set>
+		<include refid="table_value_change_criteria" />
+	</update>
+	
+	<delete id="deleteByPrimaryKey">
+		DELETE FROM mjr_static_content
+		WHERE id = #{primaryKey}
+	</delete>
+	
+	<delete id="deleteByCriteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			DELETE FROM mjr_static_content
+			<include refid="table_value_change_criteria" />
+		</if>
+	</delete>		
+
+	<select id="selectByPrimaryKey" resultMap="StaticContentResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		WHERE 
+			content.id = #{primaryKey}
+	</select>
+		
+	<select id="selectSingleRecord" resultMap="StaticContentResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+	
+	<select id="selectMultiRecords" resultMap="StaticContentResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
+		</if>
+	</select>
+
+	<select id="selectCounts" resultType="long">
+		SELECT count(DISTINCT content.id)
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>	
+	
+</mapper>

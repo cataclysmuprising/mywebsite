@@ -1,0 +1,11 @@
+target/
+/bin/
+.project
+.settings
+/.classpath
+*.classpath
+.classpath
+.metadata
+static-resources/backend/dist/
+mywebsite-backend/src/main/webapp/css/
+mywebsite-backend/src/main/webapp/js/

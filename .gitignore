@@ -1,0 +1,10 @@
+target/
+/bin/
+.project
+.settings
+/.classpath
+*.classpath
+.classpath
+.metadata
+06_Minifier/backend/dist/
+06_Minifier/backend/src/

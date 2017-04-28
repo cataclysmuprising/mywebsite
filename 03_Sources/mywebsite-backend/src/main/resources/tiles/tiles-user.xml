@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="user_home" extends="baseLayout">
+		<put-attribute name="content" value="/WEB-INF/views/site/config/user/home.jsp" />
+		<put-list-attribute name="pageScripts">
+			<add-attribute value="js/common/jquery.dataTables" />
+			<add-attribute value="js/site/config/user/home" />
+		</put-list-attribute>
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="css/common/jquery.dataTables" />
+			<add-attribute value="css/site/config/user/home" />
+		</put-list-attribute>
+	</definition>
+	<definition name="user_dataForm" extends="baseLayout">
+		<put-attribute name="content" value="/WEB-INF/views/site/config/user/dataInputForm.jsp" />
+		<put-list-attribute name="pageScripts">
+			<add-attribute value="js/common/cropper" />
+			<add-attribute value="js/site/config/user/dataInputForm" />
+		</put-list-attribute>
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="css/common/cropper" />
+			<add-attribute value="css/site/config/user/dataInputForm" />
+		</put-list-attribute>
+	</definition>
+	<definition name="user_detail" extends="baseLayout">
+		<put-attribute name="content" value="/WEB-INF/views/site/config/user/detail.jsp" />
+		<put-list-attribute name="pageScripts">
+			<add-attribute value="js/common/jquery.dataTables" />
+			<add-attribute value="js/site/config/user/detail" />
+		</put-list-attribute>
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="css/common/jquery.dataTables" />
+			<add-attribute value="css/site/config/user/detail" />
+		</put-list-attribute>
+	</definition>
+</tiles-definitions>

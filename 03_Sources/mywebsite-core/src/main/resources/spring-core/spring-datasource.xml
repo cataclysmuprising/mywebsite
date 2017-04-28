@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+ 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	  <property name="locations">
+	    <list>
+	      <value>classpath:settings/jdbc.properties</value>
+	    </list>
+	  </property>
+	  <property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    <!-- Declare a datasource that has pooling capabilities -->
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close"
+		   	p:driverClassName="${jdbc.driverClassName}"
+		   	p:url="${jdbc.url}"		   	
+		   	p:username="${jdbc.username}"
+		   	p:password="${jdbc.password}"		   	
+		   	p:defaultAutoCommit="${jdbc.defaultAutoCommit}"
+		   	p:defaultReadOnly="${jdbc.defaultReadOnly}"
+	        p:testWhileIdle="${jdbc.testWhileIdle}"
+	        p:testOnBorrow="${jdbc.testOnBorrow}"
+	        p:testOnReturn="${jdbc.testOnReturn}"
+	        p:validationQuery="${jdbc.validationQuery}"
+	        p:validationInterval="${jdbc.validationInterval}"
+	        p:timeBetweenEvictionRunsMillis="${jdbc.timeBetweenEvictionRunsMillis}"
+	        p:maxActive="${jdbc.maxActive}"
+	        p:maxIdle="${jdbc.maxIdle}"
+	        p:minIdle="${jdbc.minIdle}"
+	        p:maxWait="${jdbc.maxWait}"
+	        p:initialSize="${jdbc.initialSize}"
+	        p:removeAbandonedTimeout="${jdbc.removeAbandonedTimeout}"
+	        p:removeAbandoned="${jdbc.removeAbandoned}"
+	        p:logAbandoned="${jdbc.logAbandoned}"
+	        p:minEvictableIdleTimeMillis="${jdbc.minEvictableIdleTimeMillis}"
+	        p:jmxEnabled="${jdbc.jmxEnabled}"
+	        p:jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
+	          org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
+		 />
+	    
+    <!-- Declare a transaction manager -->
+    <bean id="transactionManager"
+    class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+    p:dataSource-ref="dataSource" />
+    
+    <!-- define the SqlSessionFactory, notice that configLocation is not needed when you use MapperFactoryBean -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+    </bean>
+
+    <!-- scan for mappers and let them be autowired -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.mycom.products.mywebsite.core.mapper" />
+    </bean>
+    
+</beans>

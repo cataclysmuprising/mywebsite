@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.config.ActionMapper">
+	<resultMap  type="ActionBean" 			id="Parent_ActionResult">
+		<id 	property="id" 				column="actionId" />
+		<result property="module" 			column="module" />
+		<result property="page" 			column="page" />
+		<result property="actionName" 		column="actionName" />
+		<result property="displayName"  	column="display_name" />
+		<result property="url" 				column="url" />
+		<result property="actionType" 		column="action_type" />
+		<result property="description"  	column="actionDescription" />
+	</resultMap>
+	
+	<resultMap 		type="ActionBean" 			id="ActionResult" 	extends="Parent_ActionResult">
+		<result 	property="recordRegId" 		column="record_reg_id"/>
+		<result 	property="recordUpdId" 		column="record_upd_id"/>
+		<result 	property="recordRegDate" 	column="record_reg_date"/>
+		<result 	property="recordUpdDate" 	column="record_upd_date"/>		
+		<collection property="roles"  			ofType="RoleBean" 	resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+	</resultMap>
+	
+	<sql id="tables">
+		FROM mjr_action action
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			LEFT JOIN mjr_role_action roleAction ON action.id=roleAction.action_id
+			LEFT JOIN mjr_role role ON roleAction.role_id=role.id
+		</if>
+	</sql>
+
+	<sql id="main_columns">
+		action.id AS actionId,
+		action.module,
+		action.page,
+		action.action_name AS actionName,
+		action.display_name,
+		action.url,
+		action.action_type,
+		action.description AS actionDescription
+	</sql>
+	
+	<sql id="meta_columns">
+		,action.record_reg_id
+		,action.record_upd_id
+		,action.record_reg_date
+		,action.record_upd_date
+	</sql>	
+	
+	<sql id="columns">
+		<include refid="main_columns" />
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.main_columns" />
+		</if>
+		<include refid="meta_columns" />		
+	</sql>
+	
+	<sql id="criterias">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					AND action.id = #{criteria.id}
+				</if>
+				<if test="criteria.includeIds != null">
+					AND action.id IN
+				    <foreach item="id" index="index" collection="criteria.includeIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>
+				<if test="criteria.excludeIds != null">
+					AND action.id NOT IN
+				    <foreach item="id" index="index" collection="criteria.excludeIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>							
+				<if test="criteria.page != null">
+					AND action.page = #{criteria.page}
+				</if>
+				<if test="criteria.actionName != null">
+					AND action.action_name = #{criteria.actionName}
+				</if>			
+				<if test="criteria.actionType != null">
+					AND action.action_type = #{criteria.actionType}
+				</if>	
+				<if test="fetchMode !=null and fetchMode.name() == 'EAGER' and criteria.roleId != null">
+					AND role.id = #{criteria.roleId}
+				</if>			
+				<if test="criteria.word != null">
+				    AND
+				    (action.page 		   LIKE '%${criteria.word}%'
+				    OR action.module  	   LIKE '%${criteria.word}%'
+					OR action.action_name  LIKE '%${criteria.word}%'
+					OR action.display_name LIKE '%${criteria.word}%'
+					OR action.url 		   LIKE '%${criteria.word}%'
+					OR action.description  LIKE '%${criteria.word}%')
+				</if>
+			</where>
+		</if>
+	</sql>
+			
+	<sql id="orders">
+		ORDER BY
+		<choose>
+			<when test="criteria !=null and criteria.orderBy == 'id'">
+				action.id ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'module'">
+				action.module ${criteria.orderAs}
+			</when>			
+			<when test="criteria !=null and criteria.orderBy == 'page'">
+				action.page ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'actionName'">
+				action.action_name ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'displayName'">
+				action.display_name ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'actionType'">
+				action.action_type ${criteria.orderAs}
+			</when>						
+			<otherwise>
+				action.id DESC
+			</otherwise>
+		</choose>
+	</sql>
+
+	<select id="selectByPrimaryKey" resultMap="ActionResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		WHERE 
+			action.id = #{primaryKey}
+	</select>
+		
+	<select id="selectSingleRecord" resultMap="ActionResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+	
+	<select id="selectMultiRecords" resultMap="ActionResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
+		</if>
+	</select>
+
+	<select id="selectCounts" resultType="long">
+		SELECT count(DISTINCT action.id)
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+	
+	<select id="selectPageNamesByModule" resultType="String" parameterType="String">
+		SELECT action.page
+		FROM mjr_action action
+		WHERE 
+			action.module = #{module}
+		GROUP BY action.page
+		ORDER BY action.page DESC
+	</select>
+</mapper>

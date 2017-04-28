@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.master.SettingMapper">
+
+	<resultMap  type="SettingBean" 			id="Parent_SettingResult">
+		<id 	property="id" 				column="settingId"/>
+		<result property="name" 			column="setting_name"/>
+		<result property="value" 			column="setting_value"/>
+		<result property="type" 			column="setting_type"/>
+		<result property="group" 			column="setting_group"/>
+		<result property="subGroup" 		column="setting_sub_group"/>
+	</resultMap>
+	
+	<resultMap  type="SettingBean" 			id="SettingResult" 		extends="Parent_SettingResult">
+		<result property="recordRegId"  	column="record_reg_id"/>
+		<result property="recordUpdId"  	column="record_upd_id"/>
+		<result property="recordRegDate" 	column="record_reg_date"/>
+		<result property="recordUpdDate" 	column="record_upd_date"/>			
+	</resultMap>
+
+	<sql id="tables">
+		FROM mjr_setting setting
+	</sql>
+
+	<sql id="main_columns">
+		setting.id AS settingId,
+		setting.setting_name,
+		setting.setting_value,
+		setting.setting_type,
+		setting.setting_group,
+		setting.setting_sub_group
+	</sql>
+	
+	<sql id="meta_columns">
+		,setting.record_reg_id
+		,setting.record_upd_id
+		,setting.record_reg_date
+		,setting.record_upd_date
+	</sql>
+	
+	<sql id="major_table_columns">
+		setting_name,
+		setting_value,
+		setting_type,
+		setting_group,
+		setting_sub_group
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{name},
+		#{value},
+		#{type},
+		#{group},
+		#{subGroup}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.name},
+		#{record.value},
+		#{record.type},
+		#{record.group},
+		#{record.subGroup}
+	</sql>		
+	
+	<sql id="columns">
+		<include refid="main_columns" />	
+		<include refid="meta_columns" />
+	</sql>	
+
+	<sql id="criterias">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					AND setting.id = ${criteria.id}
+				</if>
+				<if test="criteria.includeIds != null">
+					AND setting.id IN
+				    <foreach item="id" index="index" collection="criteria.includeIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>
+				<if test="criteria.excludeIds != null">
+					AND setting.id NOT IN
+				    <foreach item="id" index="index" collection="criteria.excludeIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.name != null">
+					AND setting.setting_name = #{criteria.name}
+				</if>
+				<if test="criteria.value != null">
+					AND setting.setting_value = #{criteria.value}
+				</if>
+				<if test="criteria.type != null">
+					AND setting.setting_type = #{criteria.type}
+				</if>
+				<if test="criteria.group != null">
+					AND setting.setting_group = #{criteria.group}
+				</if>
+				<if test="criteria.subGroup != null">
+					AND setting.setting_sub_group = #{criteria.subGroup}
+				</if>				
+				<if test="criteria.word != null">
+					AND 
+					(setting.setting_name 		 LIKE '%${criteria.word}%'
+					OR setting.setting_value 	 LIKE '%${criteria.word}%'
+					OR setting.setting_type 	 LIKE '%${criteria.word}%'
+					OR setting.setting_group 	 LIKE '%${criteria.word}%'
+					OR setting.setting_sub_group LIKE '%${criteria.word}%'
+					)
+				</if>
+			</where>
+		</if>
+	</sql>
+	
+	<sql id="table_value_change_criteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					id = #{criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.name != null">
+					AND setting_name = #{criteria.name}
+				</if>
+				<if test="criteria.value != null">
+					AND setting_value = #{criteria.value}
+				</if>
+				<if test="criteria.type != null">
+					AND setting_type = #{criteria.type}
+				</if>
+				<if test="criteria.group != null">
+					AND setting_group = #{criteria.group}
+				</if>
+				<if test="criteria.subGroup != null">
+					AND setting_sub_group = #{criteria.subGroup}
+				</if>
+			</where>
+		</if>	
+	</sql>	
+		
+	<sql id="orders">
+		ORDER BY
+		<choose>
+			<when test="criteria !=null and criteria.orderBy == 'id'">
+				setting.id ${criteria.orderAs}
+			</when>	
+			<when test="criteria !=null and criteria.orderBy == 'group'">
+				setting.setting_group ${criteria.orderAs}
+			</when>	
+			<when test="criteria !=null and criteria.orderBy == 'subGroup'">
+				setting.setting_sub_group ${criteria.orderAs}
+			</when>	
+			<when test="criteria !=null and criteria.orderBy == 'name'">
+				setting.setting_name ${criteria.orderAs}
+			</when>
+			<otherwise>
+				setting.id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="SettingBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_setting (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="insertSingleHistoryRecord" parameterType="SettingBean">
+		INSERT INTO hst_setting (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_fields" />		
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_setting (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>
+		
+	<insert id="insertMultiHistoryRecords" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO hst_setting (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_iterate_fields" />	        
+	       </foreach>	
+       </if>			
+	</insert>
+	
+	<!-- Notice : settingName won't allow to Edit -->
+	<update id="update" parameterType="SettingBean">
+		UPDATE mjr_setting
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			setting_value = #{value},
+			setting_type = #{type},
+			setting_group = #{group},
+			setting_sub_group = #{subGroup}
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<!-- Notice : settingName won't allow to Edit -->
+	<update id="updateWithCriteria">
+		UPDATE mjr_setting
+		<set>
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				record_upd_id = #{criteria.recordUpdId},
+			</if>
+			record_upd_date = getDate(),
+			<if test="updateItems != null and updateItems.keySet().size() > 0">
+				<if test="updateItems.value != null">setting_value = #{updateItems.value},</if>
+				<if test="updateItems.type != null">setting_type = #{updateItems.type},</if>
+				<if test="updateItems.group != null">setting_group = #{updateItems.group},</if>
+				<if test="updateItems.subGroup != null">setting_sub_group = #{updateItems.subGroup},</if>
+			</if>					
+		</set>
+		<include refid="table_value_change_criteria" />
+	</update>
+	
+	<delete id="deleteByPrimaryKey">
+		DELETE FROM mjr_setting
+		WHERE id = #{primaryKey}
+	</delete>
+	
+	<delete id="deleteByCriteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			DELETE FROM mjr_setting
+			<include refid="table_value_change_criteria" />
+		</if>
+	</delete>			
+	
+	<select id="selectByPrimaryKey" resultMap="SettingResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		WHERE 
+			setting.id = #{primaryKey}
+	</select>
+		
+	<select id="selectSingleRecord" resultMap="SettingResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+	
+	<select id="selectMultiRecords" resultMap="SettingResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
+		</if>
+	</select>
+
+	<select id="selectCounts" resultType="long">
+		SELECT count(DISTINCT setting.id)
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+	
+</mapper>

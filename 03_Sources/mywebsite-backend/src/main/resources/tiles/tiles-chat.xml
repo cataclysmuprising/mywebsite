@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="chat_home" extends="baseLayout">
+		<put-attribute name="content" value="/WEB-INF/views/site/config/chat/home.jsp" />
+		<put-list-attribute name="pageScripts">
+			<add-attribute value="js/common/sockjs-0.3.4" />
+			<add-attribute value="js/common/stomp" />
+			<add-attribute value="js/site/config/chat/home" />
+		</put-list-attribute>
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="css/site/config/chat/home" />
+		</put-list-attribute>
+	</definition>
+</tiles-definitions>

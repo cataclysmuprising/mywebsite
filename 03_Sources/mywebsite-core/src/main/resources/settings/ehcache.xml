@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false"
+	monitoring="autodetect" dynamicConfig="true" name="CacheManager"
+	maxBytesLocalHeap="512M" maxBytesLocalDisk="5G">
+	<diskStore path="D:/caches/mywebsite_appCaches" /><!--java.io.tmpdir -->
+	<!-- http://www.codingpedia.org/ama/spring-caching-with-ehcache/	 -->
+	<defaultCache 
+		maxBytesLocalHeap="1M" 
+		eternal="false"
+		overflowToDisk="false" 
+		timeToIdleSeconds="1800" 
+		timeToLiveSeconds="3600"
+		overflowToOffHeap="false" 
+		memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="ConfigurationCache.Action" 
+		maxBytesLocalHeap="1M"
+		eternal="true" 
+		memoryStoreEvictionPolicy="LRU">
+		<pinning store="localMemory"/>
+	</cache>
+	
+	<cache name="ConfigurationCache.Role" 
+		maxBytesLocalHeap="1M"
+		eternal="false" 
+		overflowToDisk="false" 
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="172800" 
+		overflowToOffHeap="false" 
+		memoryStoreEvictionPolicy="LRU">
+		<pinning store="localMemory"/>
+	</cache>
+	
+	<cache name="ConfigurationCache.RoleAction" 
+		maxBytesLocalHeap="3M"
+		eternal="false" 
+		overflowToDisk="false" 
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="172800" 
+		overflowToOffHeap="false" 
+		memoryStoreEvictionPolicy="LRU">
+		<pinning store="localMemory"/>
+	</cache>	
+	
+	<cache name="ConfigurationCache.User" 
+		maxBytesLocalHeap="3M"
+		eternal="false" 
+		overflowToDisk="false" 
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="172800" 
+		overflowToOffHeap="false" 
+		memoryStoreEvictionPolicy="LRU">
+		<pinning store="localMemory"/>
+	</cache>
+	
+	<cache name="ConfigurationCache.UserRole" 
+		maxBytesLocalHeap="5M"
+		eternal="false" 
+		overflowToDisk="false" 
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="172800" 
+		overflowToOffHeap="false" 
+		memoryStoreEvictionPolicy="LRU">
+		<pinning store="localMemory"/>
+	</cache>
+	
+	<cache name="ConfigurationCache.LoginHistory" 
+		maxBytesLocalHeap="3M"
+		eternal="false" 
+		overflowToDisk="false" 
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="172800" 
+		overflowToOffHeap="false" 
+		memoryStoreEvictionPolicy="LRU">
+		<pinning store="localMemory"/>
+	</cache>					
+
+	<cache name="MasterCache.Setting" 
+		maxBytesLocalHeap="5M"
+		eternal="false" 
+		overflowToDisk="false" 
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="172800" 
+		overflowToOffHeap="false" 
+		memoryStoreEvictionPolicy="LRU">
+		<pinning store="localMemory"/>
+	</cache>
+
+	<cache name="MasterCache.StaticContent" 
+		maxBytesLocalHeap="20M"
+		eternal="false" 
+		overflowToDisk="true" 
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="172800" 
+		overflowToOffHeap="false" 
+		diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="172800" 
+		memoryStoreEvictionPolicy="LRU">
+	</cache>
+	
+	<cache name="ApplicationCache.Asset" 
+		maxBytesLocalHeap="50M"
+		eternal="false" 
+		timeToIdleSeconds="1800" 
+		timeToLiveSeconds="3600"
+		overflowToOffHeap="false" 
+		memoryStoreEvictionPolicy="LRU">
+		<persistence strategy="localTempSwap" />
+	</cache>	
+
+</ehcache>

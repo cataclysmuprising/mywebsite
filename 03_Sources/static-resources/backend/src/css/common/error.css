@@ -1,0 +1,70 @@
+@font-face {
+	font-family: t3k_app_title;
+	src: url(../../fonts/Quicksand-Regular.otf);
+}
+
+@font-face {
+	font-family: t3k_app_normal;
+	src: url(../../fonts/Roboto-Regular.ttf);
+}
+
+.card {
+	width: 45%;
+	box-shadow: 0px 4px 5px silver;
+	margin: 50px auto;
+	text-align: center;
+}
+
+.cardHeader {
+	background-color: #CECECE;
+	border-bottom: 2px;
+	color: #c9302c;
+}
+
+.cardHeader .title {
+	font-family: Georgia;
+	font-size: 80px;
+	text-shadow: 2px 2px #040505;
+}
+
+.cardContent {
+	background-color: #EAEAEA;
+	color: #333;
+	padding-top: 30px;
+}
+
+.errorType {
+	font-family: 'Comic Sans MS', cursive, Georgia;
+	font-size: 40px;
+	padding-bottom: 30px;
+}
+
+.cardFooter {
+	font-family: t3k_app_normal;
+	margin: 5px;
+	padding: 30px;
+}
+
+.errorMessage {
+	padding: 10px;
+	font-family: t3k_app_normal;
+	color: #800000;
+}
+
+.userName {
+	text-transform: capitalize;
+	color: #333333;
+	font-size: 16px;
+	font-style: italic
+}
+
+hr {
+	border: 0;
+	height: 1px;
+	background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+	background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+	background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+	background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+	margin-bottom: 5px;
+	margin-top: 5px;
+}

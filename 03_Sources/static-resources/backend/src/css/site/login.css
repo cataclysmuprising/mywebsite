@@ -1,0 +1,93 @@
+@font-face {
+	font-family: mywebsite_app_normal;
+	src: url(../../fonts/Roboto-Regular.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: mywebsite_logo_normal;
+	src: url(../../fonts/BILLY_ARGEL_TRIAL.otf) format('truetype');
+}
+
+body {
+	font-family: mywebsite_app_normal;
+	font-size: 12px;
+}
+
+.site-name {
+	font-family: mywebsite_logo_normal;
+	font-size: 64px;
+}
+
+.login-logo, .register-logo {
+	text-align: center;
+	margin-bottom: 15px;
+	font-weight: 300;
+}
+
+.login-logo img {
+	bottom: 15px;
+	position: relative;
+	width: 50px;
+}
+
+.login-logo a, .register-logo a {
+	color: #444;
+}
+
+.login-page, .register-page {
+	background: #d2d6de;
+}
+
+.login-box, .register-box {
+	width: 360px;
+	margin: 7% auto;
+}
+
+@media ( max-width : 768px) {
+	.login-box, .register-box {
+		width: 90%;
+		margin-top: 20px;
+	}
+}
+
+.login-box-body, .register-box-body {
+	background: #fff;
+	padding: 20px;
+	border-top: 0;
+	color: #666;
+}
+
+.login-box-body .form-control-feedback, .register-box-body .form-control-feedback
+	{
+	color: #777;
+}
+
+.login-box-msg, .register-box-msg {
+	margin: 0;
+	text-align: center;
+	padding: 0 20px 20px 20px;
+}
+
+.social-auth-links {
+	margin: 10px 0;
+}
+
+.lblRememberMe {
+	position: relative;
+	top: 1px;
+	left: 1px;
+}
+
+.alert-sm {
+	padding: 5px 10px;
+	margin-bottom: 10px;
+}
+
+.alert-sm .message {
+	font-size: 11px;
+}
+
+.alert-sm .close {
+	text-decoration: none;
+	font-size: 17px;
+}

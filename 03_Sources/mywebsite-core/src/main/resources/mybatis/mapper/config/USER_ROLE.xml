@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.config.UserRoleMapper">
+
+	<resultMap 	type="UserRoleBean" 	id="Parent_UserRoleResult">
+		<result property="userId" 		column="user_id" />
+		<result property="roleId" 		column="role_id" />
+	</resultMap>
+	
+	<resultMap 	 	 type="UserRoleBean" 		id="UserRoleResult" extends="Parent_UserRoleResult">
+		<result 	 property="recordRegId" 	column="record_reg_id"/>
+		<result 	 property="recordUpdId" 	column="record_upd_id"/>
+		<result 	 property="recordRegDate" 	column="record_reg_date"/>
+		<result 	 property="recordUpdDate" 	column="record_upd_date"/>	
+		<association property="user" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.UserMapper.Parent_UserResult" />
+		<association property="role" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+	</resultMap>
+
+	<sql id="tables">
+		FROM mjr_user_role userRole
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			INNER JOIN mjr_user usr ON userRole.user_id = usr.id
+			INNER JOIN mjr_role role ON userRole.role_id = role.id
+		</if>		
+	</sql>
+	
+	<sql id="main_columns">
+		userRole.user_id,
+		userRole.role_id
+	</sql>
+	
+	<sql id="meta_columns">
+		,userRole.record_reg_id
+		,userRole.record_upd_id
+		,userRole.record_reg_date
+		,userRole.record_upd_date
+	</sql>	
+	
+	<sql id="major_table_columns">
+		user_id,
+		role_id	
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{userId},
+		#{roleId}	
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.userId},
+		#{record.roleId}	
+	</sql>	
+	
+	<sql id="columns">
+		<include refid="main_columns" />
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.UserMapper.main_columns" />
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.main_columns" />
+		</if>
+		<include refid="meta_columns" />		
+	</sql>
+
+	<sql id="criterias">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.userId != null">
+					AND userRole.user_id = #{criteria.userId}
+				</if>			
+				<if test="criteria.roleId != null">
+					AND userRole.role_id = #{criteria.roleId}
+				</if>
+			</where>
+		</if>
+	</sql>
+		
+	<sql id="orders">
+		order by
+		<choose>
+			<when test="criteria !=null and criteria.orderBy == 'userId'">
+				userRole.user_id ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'roleId'">
+				userRole.role_id ${criteria.orderAs}
+			</when>			
+			<otherwise>
+				userRole.role_id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="UserRoleBean">
+		INSERT INTO mjr_user_role (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="insertWithRelatedKeys">
+		INSERT INTO mjr_user_role (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			#{key1},	
+			#{key2},
+			#{recordRegId},
+			#{recordRegId},<!-- both are same -->
+			getDate(),
+			getDate()				
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_user_role (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>
+	
+	<delete id="deleteByKeys">
+		DELETE FROM mjr_user_role
+		WHERE user_id = #{key1}
+		AND   role_id = #{key2}
+	</delete>
+	
+	<delete id="deleteByCriteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			DELETE FROM mjr_user_role
+			<where>
+				<if test="criteria.userId != null">
+					AND user_id = #{criteria.userId}
+				</if>
+				<if test="criteria.userIds != null">
+					AND user_id IN
+				    <foreach item="id" index="index" collection="criteria.userIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>					
+				</if>				
+				<if test="criteria.roleId != null">
+					AND role_id = #{criteria.roleId}
+				</if>	
+				<if test="criteria.roleIds != null">
+					AND role_id IN
+				    <foreach item="id" index="index" collection="criteria.roleIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>					
+				</if>							
+			</where>
+		</if>
+	</delete>			
+	
+	<select id="selectMultiRecords"  resultMap="UserRoleResult">
+		SELECT
+		<include refid="columns"  />
+		<include refid="tables" />
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
+		</if>
+	</select>
+	
+	<select id="selectRelatedKeys" resultType="long">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			SELECT
+			<choose>
+				<when test="criteria.userId != null">
+					userRole.role_id
+				</when>
+				<otherwise>
+					userRole.user_id
+				</otherwise>
+			</choose>
+			FROM mjr_user_role userRole
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				<where>
+					<choose>
+						<when test="criteria.userId != null">
+							userRole.user_id = #{criteria.userId}
+						</when>
+						<otherwise>
+							userRole.role_id = #{criteria.roleId}
+						</otherwise>
+					</choose>				
+				</where>
+			</if>		
+		</if>
+	</select>	
+	
+	<select id="selectByKeys" resultMap="UserRoleResult">
+		<if test="key1 != null and key2 !=null">
+			SELECT
+			<include refid="columns"  />
+			<include refid="tables" />
+			WHERE
+			 	userRole.user_id = #{key1}
+				AND userRole.role_id = #{key2}
+		</if>
+	</select>	
+
+	<select id="selectCounts" resultType="long">
+		SELECT count(*)
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+</mapper>

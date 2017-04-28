@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<security:http pattern="/js/**" security="none" />
+	<security:http pattern="/css/**" security="none" />
+	<security:http pattern="/images/**" security="none" />
+	<security:http pattern="/fonts/**" security="none" />
+	<security:http pattern="/index.jsp" security="none" />
+	
+	<security:http use-expressions="true">
+		<security:form-login 
+		default-target-url="/"
+		login-page="/login" 
+		authentication-failure-url="/loginfailed"
+		username-parameter="loginId" 
+		password-parameter="password"/>
+		
+        <security:access-denied-handler error-page="/accessDenied"/>
+        
+		<security:custom-filter ref="filter" before="FILTER_SECURITY_INTERCEPTOR" />        	
+		<!-- 1 week remember me -->
+		<security:remember-me 
+			key="mywebsite_rbm-key" 
+			remember-me-cookie="mywebsite_rbm"
+		    token-validity-seconds="604800"
+			remember-me-parameter="remember-me" />
+		<security:csrf />
+		<security:session-management session-fixation-protection="migrateSession" invalid-session-url="/sessionTimeOut" session-authentication-error-url="/login">
+			<security:concurrency-control max-sessions="50" error-if-maximum-exceeded="false" expired-url="/sessionTimeOut" />
+		</security:session-management>		
+	</security:http>
+	
+	<bean id="filter" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<property name="authenticationManager" ref="authenticationManager"/>
+		<property name="accessDecisionManager">
+			 <bean class="org.springframework.security.access.vote.AffirmativeBased">
+			 	<constructor-arg >
+			 	<bean class="org.springframework.security.access.vote.RoleVoter">
+			 		<property name="rolePrefix" value=""/>
+			 	</bean>
+			 	</constructor-arg>
+			 </bean>
+		</property>
+		<property name="securityMetadataSource" ref="dbFilterInvocationSecurityMetadataSource"/>
+	</bean>
+	
+	<bean id="dbFilterInvocationSecurityMetadataSource" class="com.mycom.products.mywebsite.backend.security.DbFilterInvocationSecurityMetadataSource"/>
+		
+    <security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider user-service-ref="authenticationUserService">
+			<security:password-encoder hash="sha-256"/>
+		</security:authentication-provider>
+    </security:authentication-manager>	
+    
+	<bean id="authenticationUserService" class="com.mycom.products.mywebsite.backend.security.AuthenticationUserService" />
+	<bean id="authLoggerListener" class="org.springframework.security.authentication.event.LoggerListener"/>
+	<bean id="eventLoggerListener" class="org.springframework.security.access.event.LoggerListener" />    
+</beans>

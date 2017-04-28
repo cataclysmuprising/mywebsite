@@ -1,0 +1,91 @@
+.profileImagePanel {
+	position: relative;
+	width: 150px;
+	height: 150px;
+	margin: 0 auto;
+	cursor: pointer;
+	background-color: #333;
+	border-radius: 4px;
+	transition: all 0.2s ease-in-out 0s;
+}
+
+.selected_image_panel {
+	position: relative;
+	width: 150px;
+	height: 150px;
+	margin: 0 auto;
+	background-color: #333;
+	overflow: hidden;
+	border-radius: 4px;
+}
+
+.selected_image_panel .img-thumbnail {
+	transition: none 0s ease 0s;
+}
+
+.btn-imageUpload {
+	position: absolute;
+	right: 23px;
+	top: 55px;
+	display: none;
+	z-index: 2;
+}
+
+.profileImagePanel:hover .btn-imageUpload {
+	display: block;
+}
+
+.btn-imageUpload:hover {
+	color: #000 !important;
+	box-shadow: 0 0 5px 0px #fff !important;
+}
+
+.profileImagePanel:hover img {
+	opacity: 0.1;
+}
+
+.smallPanel {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+.img-thumbnail {
+	padding: 0;
+	border: 0;
+}
+
+.cropArea {
+	width: 598px;
+	height: 250px;
+	display: none;
+}
+/* Override Cropper's styles */
+/* .cropper-view-box, .cropper-face {
+	border-radius: 50%;
+} */
+.preview {
+	overflow: hidden;
+}
+
+.docs-toolbar {
+	margin-top: 15px;
+	margin-bottom: -10px;
+	text-align: center;
+	display: none;
+}
+
+.btn-outline:hover, .btn-outline:focus, .btn-outline:active {
+	color: #333;
+}
+
+#changePassword {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+#resetPassword {
+	position: absolute;
+	right: 0;
+	top: 0;
+}

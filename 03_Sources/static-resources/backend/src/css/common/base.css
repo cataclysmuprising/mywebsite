@@ -1,0 +1,406 @@
+@CHARSET "UTF-8";
+/*
+ * Global Page Setups
+ * ------------------
+ */
+@font-face {
+	font-family: mywebsite_app_title;
+	src: url(../../fonts/Roboto-Regular.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: mywebsite_app_normal;
+	src: url(../../fonts/Roboto-Regular.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: mywebsite_logo_normal;
+	src: url(../../fonts/BILLY_ARGEL_TRIAL.otf) format('truetype');
+}
+
+body {
+	font-family: mywebsite_app_normal;
+	font-size: 12px;
+	overflow: hidden;
+}
+/*
+ * Horizontal rule style
+ * ---------------------
+ */
+hr {
+	border: 0;
+	height: 1px;
+	background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+	background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+	background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+	background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+	margin-bottom: 5px;
+	margin-top: 5px;
+}
+/*
+ * Customize Bootstrap's PopOver
+ * -----------------------------
+ */
+.popover-title {
+	color: #26A69A;
+	font-size: 12px;
+}
+
+.popover-item {
+	font-size: 11px;
+	padding-bottom: 2px;
+}
+/*
+ * Disable outline style of Bootstrap
+ * ----------------------------------
+ */
+li>a, .navbar-header>a, select>option {
+	outline: none !important;
+}
+
+* {
+	outline: none !important;
+}
+/*
+ * customize hover style on nav
+ * --------------------------
+ */
+.nav-tabs > li > a:hover {
+    border-color: transparent;
+    color : #555;
+}
+/*
+ * Customize Lobibox font style
+ * -----------------------------
+ */
+.lobibox-notify.notify-mini .lobibox-notify-title {
+	font-size: 16px;
+}
+
+.lobibox-notify {
+	font-family: mywebsite_app_normal, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+/*
+ * Disabled field style
+ * -----------------------------
+ */
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control
+	{
+	cursor: not-allowed;
+	pointer-events: none;
+	opacity: 0.8;
+}
+/*
+ * Tootip info icon color
+ * ---------------------
+ */
+.help-tooltip {
+	color: #2e8b57;
+	cursor: help;
+}
+/*
+ * Center Text Style
+ * -----------------
+ */
+.text-center {
+	text-align: center;
+}
+/*
+ * User profile logo
+ * -----------------
+ */
+.logo-mini img, .logo-lg img {
+	height: 40px;
+	position: relative;
+	top: 5px;
+	float: left;
+}
+/*
+ * Website Name style
+ * ------------------
+ */
+.site-name {
+	font-family: mywebsite_logo_normal;
+	font-size: 40px;
+}
+
+/*
+ * Preloading Image
+ * -----------------
+ */
+#preloader {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #E9EFF3;
+	z-index: 99;
+}
+
+#status img {
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	left: 55%;
+	top: 52%;
+	background-repeat: no-repeat;
+	background-position: center;
+	margin: -50px 0px 0px -50px;
+}
+/*
+ * Bootstrap Select Plugin
+ * -----------------------
+ */
+.bootstrap-select .btn-default, .bootstrap-select .dropdown-menu {
+	background-color: #fff;
+	font-size: 11px;
+}
+
+.bootstrap-select .btn {
+	border-radius: 0px;
+	height: 100%;
+}
+
+.bootstrap-select .btn-default:focus, .bootstrap-select .btn-default.focus,
+	.bootstrap-select .btn-default:active, .bootstrap-select .btn-default.active,
+	.bootstrap-select .btn-default:active, .bootstrap-select .btn-default.active,
+	.bootstrap-select.open>.dropdown-toggle.btn-default {
+	border-color: #3c8dbc;
+	box-shadow: none;
+	background-color: #fff;
+}
+
+.bootstrap-select .btn-group.open .dropdown-toggle {
+	box-shadow: none;
+}
+
+.bootstrap-select .dropdown-toggle:focus {
+	outline: none !important;
+}
+/*
+ * Scroll to Top Button
+ * --------------------
+ */
+.scrollToTop {
+	background-color: #252c34;
+	border: 3px solid #000000;
+	border-radius: 30px;
+	bottom: 16%;
+	box-shadow: 0 3px 6px -1px #333333;
+	color: #ffffff;
+	cursor: pointer;
+	display: none;
+	font-size: 20px;
+	opacity: 0.7;
+	padding-left: 4px;
+	padding-right: 4px;
+	position: fixed;
+	right: 5px;
+	text-align: center;
+	text-decoration: none;
+	transition: all 0.9s ease 0s;
+	z-index: 2;
+}
+
+.scrollToTop:hover {
+	background-color: #fff;
+	color: #252C34;
+}
+/*
+ * change modal style apperance
+ * ----------------------------
+ */
+.modal-header {
+	padding: 9px 15px;
+	border-bottom: 1px solid #357CA5;
+	background-color: #3C8DBC;
+}
+
+.modal-header .close {
+	margin-top: 2px;
+}
+
+.modal-title {
+	color: #fff;
+}
+
+.modal-body .text-warning {
+	font-size: 11px;
+}
+/*
+ * required field style
+ * --------------------
+ */
+label.required:after {
+	content: " *";
+	color: red;
+}
+/*
+ * box shadow for buttons with icons
+ * ---------------------------------
+ */
+.btn-social i.fa {
+	box-shadow: -3px 0 4px 1px #fff;
+	font-size: 14px !important;
+}
+/*
+ * avoid required style break line
+ * -------------------------------
+ */
+.control-label {
+	white-space: nowrap;
+}
+/*
+ * Set background color for Admin LTE's box header
+ * -----------------------------------------------
+ */
+.box-header {
+	background-color: #f5fffa;
+}
+/*
+ * Customize the radio inline group
+ * --------------------------------
+ */
+.radio-inline-group {
+	position: relative;
+	left: -2px;
+}
+
+.radio-inline-group label {
+	padding: 5px;
+	font-weight: normal;
+	cursor: pointer;
+	position: relative;
+	top: -2px;
+}
+/*
+ * Custom width ratios
+ * -------------------
+ */
+.half-width {
+	width: 50%;
+}
+
+.btn-add-new {
+	float: right;
+	right: -15px;
+}
+/*
+ * Customize Bootstrap's Table and JQuery DataTable
+ * ------------------------------------------------
+ */
+.table {
+	/* white-space: nowrap; */
+	width: 100%;
+}
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td,
+	.table>tbody>tr>td, .table>tfoot>tr>td {
+	vertical-align: middle;
+}
+
+.table>tbody>tr>th, .table>tbody>tr>td {
+	padding: 3px 8px;
+	height: 30px;
+	min-height: 30px;
+	max-height: 30px;
+}
+
+.dataTables_info {
+	float: left;
+}
+
+.fixedColumnsTable .btn-group .btn {
+	padding: 4px 8px;
+}
+
+.datatable_scrollArea {
+	overflow-x: auto;
+	position: relative;
+}
+
+.datatable-cell-item.dropdown-menu {
+	min-width: 94px;
+	font-size: 12px;
+}
+
+.functionColumn {
+	width: 80px !important;
+	max-width: 80px !important;
+	min-width: 80px !important;
+	text-align: center;
+	font-weight: 700;
+	cursor: default !important;
+}
+/*
+ * Selectable DataTable Style
+ * --------------------------
+ */
+table.dataTable.selectable {
+	
+}
+
+table.dataTable.selectable tbody td:first-child, 
+table.dataTable.selectable thead th:first-child,
+table.dataTable.selectable thead td:first-child {
+	width: 30px;
+	min-width: 30px;
+	max-width: 30px;
+}
+
+table.dataTable.selectable tr {
+	cursor: pointer;
+}
+
+table.dataTable.selectable tr.selected {
+	background-color: #ddcab0;
+}
+
+.itemCountWrapper {
+	background-color: #f9f9f9;
+	border: 1px solid #f4f4f4;
+	border-radius: 3px;
+	opacity: 0; 
+	left : 48%;
+	padding: 5px 10px;
+	position: fixed;
+	top: 0;
+	width: auto;
+	z-index: 999999999;
+	left: 48%;
+}
+
+.itemCountWrapper .count {
+	color: #dd4b39;
+}
+/*
+ * Remove margin bottom while validation errors
+ * --------------------------------------------
+ */
+.form-group.has-error {
+	margin-bottom: 0px;
+}
+/*
+ * validation errors group panel for fieldless
+ * --------------------------------------------
+ */
+div.input-fieldless {
+	display:none;
+}
+div.input-fieldless blockquote {
+	box-shadow: 1px 0 3px -2px red;
+	color: #fff !important;
+	font-size: 14px;
+	border-left: 10px solid #ad8080;
+	background-color : #FFEFD5;
+	border-radius : 5px;
+	margin : 0 auto;
+	width :80%;
+}
+div.input-fieldless blockquote span.help-block::before {
+	content: "\f18e";
+	font-family: FontAwesome;
+	display: inline-block;
+	padding-right: 5px;
+}

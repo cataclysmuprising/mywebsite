@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="role_home" extends="baseLayout">
+		<put-attribute name="content" value="/WEB-INF/views/site/config/role/home.jsp" />
+		<put-list-attribute name="pageScripts">
+			<add-attribute value="js/common/jquery.dataTables" />
+			<add-attribute value="js/site/config/role/home" />
+		</put-list-attribute>
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="css/common/jquery.dataTables" />
+			<add-attribute value="css/site/config/role/home" />
+		</put-list-attribute>
+	</definition>
+	<definition name="role_dataForm" extends="baseLayout">
+		<put-attribute name="content" value="/WEB-INF/views/site/config/role/dataInputForm.jsp" />
+		<put-list-attribute name="pageScripts">
+			<add-attribute value="js/common/jquery.dataTables" />
+			<add-attribute value="js/common/dataTables-select" />
+			<add-attribute value="js/site/config/role/dataInputForm" />
+		</put-list-attribute>
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="css/common/jquery.dataTables" />
+			<add-attribute value="css/site/config/role/dataInputForm" />
+		</put-list-attribute>
+	</definition>
+</tiles-definitions>

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.config.UserMapper">
+
+	<resultMap  type="UserBean" 			id="Parent_UserResult">
+		<id 	property="id" 				column="userId" />
+		<result property="loginId" 			column="login_id"/>
+		<result property="age" 				column="age" />
+		<result property="name" 			column="name" />
+		<result property="gender" 			column="gender" />
+		<result property="email" 			column="email" />
+		<result property="password" 		column="password" />
+		<result property="nrc" 				column="nrc" />
+		<result property="phone" 			column="phone" />
+		<result property="dob" 				column="dob" jdbcType="DATE"/>
+		<result property="address" 			column="address" />
+		<result property="contentId" 		column="content_id" />
+		<result property="lastLoginDate" 	column="lastLoginDate" />
+	</resultMap>
+	
+	<resultMap  	 type="UserBean" 			id="UserResult" extends="Parent_UserResult">
+		<result 	 property="recordRegId" 	column="record_reg_id"/>
+		<result  	 property="recordUpdId" 	column="record_upd_id"/>
+		<result 	 property="recordRegDate" 	column="record_reg_date"/>
+		<result 	 property="recordUpdDate" 	column="record_upd_date"/>			
+		<association property="content" 		javaType="StaticContentBean"  resultMap="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.Parent_StaticContentResult" />
+		<collection  property="roles" 			ofType="RoleBean" 		  	  resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+	</resultMap>
+	
+	<sql id="tables">
+		FROM mjr_user usr
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			LEFT JOIN mjr_user_role userRole ON usr.id = userRole.user_id 
+			LEFT JOIN mjr_role role ON userRole.role_id = role.id
+			LEFT JOIN mjr_static_content content ON usr.content_id = content.id
+		</if>
+	</sql>
+
+	<sql id="main_columns">
+		usr.id AS userId,
+		usr.login_id,
+		usr.password,
+		usr.age,
+		usr.name,
+		usr.gender,
+		usr.email,
+		usr.nrc,
+		usr.phone,
+		usr.dob,
+		usr.address,
+		usr.content_id,
+		(SELECT MAX(login_date) FROM mjr_login_history history WHERE history.user_id = usr.id) AS lastLoginDate
+	</sql>
+	
+	<sql id="meta_columns">
+		,usr.record_reg_id
+		,usr.record_upd_id
+		,usr.record_reg_date
+		,usr.record_upd_date
+	</sql>	
+	
+	<sql id="major_table_columns">
+		login_id,
+		content_id,
+		age,
+		name,
+		gender,
+		email,
+		password,
+		nrc,
+		phone,
+		dob,
+		address
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{loginId},
+		#{contentId},
+		#{age},
+		#{name},
+		#{gender},
+		#{email},
+		#{password},
+		#{nrc},
+		#{phone},
+		#{dob},
+		#{address}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.loginId},
+		#{record.contentId},
+		#{record.age},
+		#{record.name},
+		#{record.gender},
+		#{record.email},
+		#{record.password},
+		#{record.nrc},
+		#{record.phone},
+		#{record.dob},
+		#{record.address}
+	</sql>	
+	
+	<sql id="columns">
+		<include refid="main_columns" />
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,<include refid="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.main_columns" />
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.main_columns" />
+		</if>	
+		<include refid="meta_columns" />	
+	</sql>
+
+	<sql id="criterias">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					AND usr.id = #{criteria.id}
+				</if>	
+				<if test="criteria.includeIds != null">
+					AND usr.id IN
+				    <foreach item="id" index="index" collection="criteria.includeIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>
+				<if test="criteria.excludeIds != null">
+					AND usr.id NOT IN
+				    <foreach item="id" index="index" collection="criteria.excludeIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>
+				<if test="criteria.loginId != null">
+					AND usr.login_id = #{criteria.loginId}
+				</if>				
+				<if test="criteria.age != null">
+					AND usr.age = #{criteria.age}
+				</if>									
+				<if test="criteria.name != null">
+					AND usr.name = #{criteria.name}
+				</if>
+				<if test="criteria.email != null">
+					AND usr.email = #{criteria.email}
+				</if>
+				<if test="criteria.nrc != null">
+					AND usr.nrc = #{criteria.nrc}
+				</if>		
+				<if test="criteria.phone != null">
+					AND usr.phone = #{criteria.phone}
+				</if>
+				<if test="criteria.gender != null">
+					AND usr.gender = #{criteria.gender}
+				</if>					
+				<if test="criteria.word != null">
+					AND 
+					(usr.login_id LIKE  '%${criteria.word}%'
+					OR usr.name   LIKE  '%${criteria.word}%'
+					OR usr.email  LIKE  '%${criteria.word}%'
+					OR usr.nrc    LIKE  '%${criteria.word}%'
+					OR usr.phone  LIKE  '%${criteria.word}%')
+				</if>
+				<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+					<if test="criteria.roleId != null">
+						role.id = #{criteria.roleId}
+					</if>				
+					<if test="criteria.roleName != null">
+						role.name = #{criteria.roleName}
+					</if>
+					<if test="criteria.contentId != null">
+						content.id = #{criteria.contentId}
+					</if>										
+				</if>				
+			</where>
+		</if>
+	</sql>
+	
+	<sql id="table_value_change_criteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					AND id = #{criteria.id}
+				</if>	
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="item" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${item}
+				    </foreach>
+				</if>	
+				<if test="criteria.age != null">
+					AND age = #{criteria.age}
+				</if>								
+				<if test="criteria.loginId != null">
+					AND login_id = #{criteria.loginId}
+				</if>
+				<if test="criteria.name != null">
+					AND name = #{criteria.name}
+				</if>
+				<if test="criteria.email != null">
+					AND email = #{criteria.email}
+				</if>
+				<if test="criteria.nrc != null">
+					AND nrc = #{criteria.nrc}
+				</if>		
+				<if test="criteria.phone != null">
+					AND phone = #{criteria.phone}
+				</if>
+				<if test="criteria.gender != null">
+					AND gender = #{criteria.gender}
+				</if>					
+			</where>
+		</if>	
+	</sql>	
+	
+	<sql id="orders">
+		ORDER BY
+		<choose>
+			<when test="criteria !=null and criteria.orderBy == 'id'">
+				usr.id ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'age'">
+				usr.age ${criteria.orderAs}
+			</when>			
+			<when test="criteria !=null and criteria.orderBy == 'loginId'">
+				usr.login_id ${criteria.orderAs}
+			</when>						
+			<when test="criteria !=null and criteria.orderBy == 'name'">
+				usr.name ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'email'">
+				usr.email ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'nrc'">
+				usr.nrc ${criteria.orderAs}
+			</when>	
+			<when test="criteria !=null and criteria.orderBy == 'phone'">
+				usr.phone ${criteria.orderAs}
+			</when>	
+			<when test="criteria !=null and criteria.orderBy == 'loginDate'">
+				lastLoginDate ${criteria.orderAs}
+			</when>								
+			<otherwise>
+				usr.id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_user (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="insertSingleHistoryRecord" parameterType="UserBean">
+		INSERT INTO hst_user (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_fields" />		
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_user (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>
+		
+	<insert id="insertMultiHistoryRecords" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO hst_user (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_iterate_fields" />	        
+	       </foreach>	
+       </if>			
+	</insert>
+	
+	<!-- Notice : LoginId , Email and Password won't allow to Edit -->
+	<update id="update" parameterType="UserBean">
+		UPDATE mjr_user
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),	
+			age = #{age},
+			name = #{name},
+			<if test="password != null">
+			password = #{password},
+			</if>
+			gender = #{gender},
+			nrc = #{nrc},
+			phone= #{phone},
+			dob = #{dob},
+			address = #{address},
+			content_id = #{contentId}
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<!-- Notice : LoginId and Email won't allow to Edit -->
+	<update id="updateWithCriteria">
+		UPDATE mjr_user
+		<set>
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				record_upd_id = #{criteria.recordUpdId},
+			</if>
+			record_upd_date = getDate(),
+			<if test="updateItems != null and updateItems.keySet().size() > 0">
+				<if test="updateItems.password != null">password = #{updateItems.password},</if>
+				<if test="updateItems.age != null">age = #{updateItems.age},</if>
+				<if test="updateItems.name != null">name = #{updateItems.name},</if>
+				<if test="updateItems.gender != null">gender = #{updateItems.gender},</if>
+				<if test="updateItems.nrc != null">nrc = #{updateItems.nrc},</if>
+				<if test="updateItems.phone != null">phone= #{updateItems.phone},</if>
+				<if test="updateItems.dob != null">dob = #{updateItems.dob},</if>
+				<if test="updateItems.address != null">address = #{updateItems.address},</if>
+				<if test="updateItems.contentId != null">content_id = #{updateItems.contentId},</if>		
+			</if>					
+		</set>
+		<include refid="table_value_change_criteria" />
+	</update>
+	
+	<delete id="deleteByPrimaryKey">
+		DELETE FROM mjr_user
+		WHERE id = #{primaryKey}
+	</delete>
+	
+	<delete id="deleteByCriteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			DELETE FROM mjr_user
+			<include refid="table_value_change_criteria" />
+		</if>
+	</delete>		
+	
+	<select id="selectByPrimaryKey" resultMap="UserResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		WHERE 
+			usr.id = #{primaryKey}
+	</select>
+		
+	<select id="selectSingleRecord" resultMap="UserResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+	
+	<select id="selectMultiRecords" resultMap="UserResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
+		</if>
+	</select>
+
+	<select id="selectCounts" resultType="long">
+		SELECT count(DISTINCT usr.id)
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+
+</mapper>

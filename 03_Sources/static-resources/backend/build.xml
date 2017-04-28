@@ -1,0 +1,185 @@
+<project name="Build example" default="all" basedir=".">
+    
+    <property file="build.properties"/>
+
+    <!-- Targets -->
+    <target name="target.clean">
+        <echo message="*** [START] Clean old static resources [JS/CSS] from target project ***" />
+        <delete dir="${TARGET_CSS_DIR}" />
+    	<echo message="[FINISH] Removing ${TARGET_CSS_DIR}" />
+    	<delete dir="${TARGET_JS_DIR}" />
+    	<echo message="[FINISH] Removing ${TARGET_JS_DIR}" />
+    </target>      
+
+    <target name="target.mkdirs" depends="target.clean">
+        <echo message="*** [START] Create empty folders to put static resources ***" />
+        <mkdir dir="${TARGET_CSS_DIR}" />
+    	<echo message="[FINISH] Creating path ${TARGET_CSS_DIR}" />
+    	<mkdir dir="${TARGET_JS_DIR}" />
+    	<echo message="[FINISH] Creating path ${TARGET_JS_DIR}" />
+    </target>
+	
+    <target name="source.clean">
+        <echo message="*** [START] Clean old static resources [JS/CSS] from source project ***" />
+        <delete dir="${SRC_CSS_DIR}" />
+    	<echo message="[FINISH] Removing ${SRC_CSS_DIR}" />
+    	<delete dir="${SRC_JS_DIR}" />
+    	<echo message="[FINISH] Removing ${SRC_JS_DIR}" />
+    </target>      
+
+    <target name="source.mkdirs" depends="source.clean">
+        <echo message="*** [START] Create empty folders to put static resources ***" />
+        <mkdir dir="${SRC_CSS_DIR}" />
+    	<echo message="[FINISH] Creating path ${SRC_CSS_DIR}" />
+    	<mkdir dir="${SRC_JS_DIR}" />
+    	<echo message="[FINISH] Creating path ${SRC_JS_DIR}" />
+    </target>	
+	
+    <target name="dist.clean">
+    	<delete dir="${DIST_DIR}" />
+    	<echo message="*** [FINISH] Removing old distribution path ${DIST_DIR} ***" />
+    </target> 
+	
+    <target name="dist.mkdir" depends="dist.clean">
+    	<mkdir dir="${DIST_DIR}" />
+    	<echo message="[FINISH] Re-create new distribution path ${DIST_DIR}" />
+    </target>
+	
+    <target name="dist.copy.source.debug" depends="dist.mkdir">
+    	<echo message="Copy all debug version CSS and JS files from source folder to distribution folder." />
+        <copy todir="${DIST_CSS_DIR}" overwrite="true">
+            <fileset dir="${SRC_CSS_DIR}" includes="**"/>
+        </copy>
+    	<echo message="[FINISH] CSS files copy finished." />
+    	
+        <copy todir="${DIST_JS_DIR}" overwrite="true">
+            <fileset dir="${SRC_JS_DIR}" includes="**"/>
+        </copy>
+    	<echo message="[FINISH] JS files copy finished." />
+    </target>
+	
+    <target name="dist.js.common.concat" depends="dist.copy.source.debug" description="Concatenate JavaScript source files">
+        <echo message="*** [START] Concat common JavaScript source files for common js file ***" />
+        <concat destfile="${DIST_JS_DIR}/common/main.js">
+            <filelist id="config.files" dir="${DIST_JS_DIR}/common">
+                <file name="pace.js"/>
+                <file name="jquery-1.12.3.js"/>
+                <file name="jquery-ui.js"/>
+                <file name="bootstrap.js"/>
+                <file name="moment.js"/>
+                <file name="fastclick.js"/>
+                <file name="icheck.js"/>
+                <file name="md5.js"/>
+                <file name="lobibox-notifications.js"/>
+                <file name="tooltipster.bundle.js"/>
+                <file name="jquery.slimscroll.js"/>
+                <file name="bootstrap-select.js"/>
+                <file name="bootstrap-datetimepicker.js"/>
+                <file name="theme.js"/>
+            	<!-- more items ? insert before base.js -->
+            	<file name="base.js"/>
+            </filelist>
+        </concat>
+    </target>	
+	
+    <target name="dist.css.common.concat" depends="dist.copy.source.debug" description="Concatenate CSS source files">
+        <echo message="*** [START] Concat common CSS source files for common css file ***" />
+        <concat destfile="${DIST_CSS_DIR}/common/style.css">
+            <filelist id="config.files" dir="${DIST_CSS_DIR}/common">
+                <file name="pace.css"/>
+                <file name="bootstrap.css"/>
+                <file name="font-awesome.css"/>
+                <file name="animate.css"/>
+                <file name="icheck-minimal-blue.css"/>
+                <file name="bootstrap-select.css"/>
+                <file name="bootstrap-datetimepicker.css"/>
+                <file name="lobibox.css"/>
+                <file name="tooltipster.bundle.css"/>
+                <file name="skin-blue.css"/>
+            	<!-- more items ? insert below -->
+            </filelist>            
+        </concat>
+    </target>	
+	
+    <target name="dist.min.css" depends="dist.copy.source.debug">
+    	<echo message="Minified every CSS files from distribution folder." />
+        <apply executable="java" parallel="false" verbose="false" dest="${DIST_CSS_DIR}">
+            <fileset dir="${DIST_CSS_DIR}" excludes="**/*-min.css" includes="**/*.css"/>
+            <arg line="-jar" />
+            <arg path="${YUI_DIR}" /> 
+            <srcfile/>       
+            <arg line="--charset" />
+            <arg line="utf-8" />            
+            <arg line="-o" />
+            <mapper type="glob" from="*.css" to="*-min.css"/>
+            <targetfile />
+        </apply>
+    </target>
+	
+    <target name="dist.min.js" depends="dist.copy.source.debug">
+    	<echo message="Minified every JS files from distribution folder." />
+        <apply executable="java" parallel="false" verbose="false" dest="${DIST_JS_DIR}">
+            <fileset dir="${DIST_JS_DIR}" excludes="**/*-min.js" includes="**/*.js"/>
+            <arg line="-jar" />
+            <arg path="${YUI_DIR}" /> 
+            <srcfile/>       
+            <arg line="--charset" />
+            <arg line="utf-8" />            
+            <arg line="-o" />
+            <mapper type="glob" from="*.js" to="*-min.js"/>
+            <targetfile />
+        </apply>
+    </target>	
+	
+    <target name="dist.clean.css.debug">
+        <echo message="Remove debug version of CSS files from distribution folder. ***" />
+        <delete includeemptydirs="true">
+            <fileset dir="${DIST_CSS_DIR}" excludes="**/*-min.css" includes="**/*.css"/>
+        </delete> 
+    </target>
+	
+    <target name="dist.clean.js.debug">
+        <echo message="Remove debug version of JS files from distribution folder. ***" />
+        <delete includeemptydirs="true">
+            <fileset dir="${DIST_JS_DIR}" excludes="**/*-min.js" includes="**/*.js"/>
+        </delete> 
+    </target>	
+	
+    <target name="switch.development" depends="target.mkdirs">
+    	<echo message="*** [START] Switch to development mode.***" />
+    	<echo message="Copy all debug version CSS and JS files to target project." />
+        <copy todir="${TARGET_CSS_DIR}" overwrite="true">
+            <fileset dir="${SRC_CSS_DIR}" includes="**"/>
+        </copy>
+        <copy todir="${TARGET_JS_DIR}" overwrite="true">
+            <fileset dir="${SRC_JS_DIR}" includes="**"/>
+        </copy>        
+    </target> 	
+	
+    <target name="switch.production" depends="target.mkdirs,dist.js.common.concat,dist.css.common.concat,dist.min.css,dist.clean.css.debug,dist.min.js,dist.clean.js.debug">
+    	<echo message="*** [START] Switch to production mode.***" />
+    	<echo message="Copy all minify version CSS and JS files to target project." />
+        <copy todir="${TARGET_CSS_DIR}" overwrite="true">
+            <fileset dir="${DIST_CSS_DIR}" includes="**"/>
+        </copy>
+        <copy todir="${TARGET_JS_DIR}" overwrite="true">
+            <fileset dir="${DIST_JS_DIR}" includes="**"/>
+        </copy>        
+    </target>	
+	
+    <target name="dev.reverse" depends="source.mkdirs">
+    	<echo message="*** [START] Make Sources as Target.***" />
+    	<echo message="Copy all debug version CSS and JS files from target project to source." />
+        <copy todir="${SRC_CSS_DIR}" overwrite="true">
+            <fileset dir="${TARGET_CSS_DIR}" includes="**"/>
+        </copy>
+        <copy todir="${SRC_JS_DIR}" overwrite="true">
+            <fileset dir="${TARGET_JS_DIR}" includes="**"/>
+        </copy>        
+    </target> 	
+
+    <target name="all" depends="dev.reverse">
+        <echo message="Build completed." />
+    </target>
+
+</project>
